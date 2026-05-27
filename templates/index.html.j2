@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Briefing</title>
+  <!-- 最新アーカイブへ自動リダイレクト -->
+  <meta http-equiv="refresh" content="0; url=archive/{{ latest_date }}.html">
+  <style>
+    :root {
+      --bg: #f8f9fa; --surface: #fff; --text: #212529;
+      --muted: #6c757d; --border: #dee2e6; --accent: #4361ee;
+      --accent-light: #e8ecfb;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1117; --surface: #1a1d27; --text: #e9ecef;
+        --muted: #868e96; --border: #2d3143; --accent-light: #1e2340;
+      }
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans',
+                   'Yu Gothic UI', 'Segoe UI', sans-serif;
+      line-height: 1.7;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 640px; margin: 0 auto; padding: 3rem 1.25rem; }
+    h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: .5rem; }
+    .subtitle { color: var(--muted); font-size: .88rem; margin-bottom: 2rem; }
+    .latest-link {
+      display: inline-block;
+      background: var(--accent); color: #fff;
+      padding: .6rem 1.4rem; border-radius: 8px;
+      font-weight: 600; font-size: .95rem;
+      margin-bottom: 2.5rem;
+    }
+    .latest-link:hover { opacity: .9; text-decoration: none; }
+    h2 { font-size: 1rem; font-weight: 700; margin-bottom: .75rem;
+         padding-bottom: .5rem; border-bottom: 2px solid var(--border); }
+    .archive-list { list-style: none; }
+    .archive-list li {
+      border-bottom: 1px solid var(--border);
+      padding: .55rem 0;
+      font-size: .9rem;
+    }
+    .archive-list li:last-child { border-bottom: none; }
+    .latest-tag {
+      font-size: .7rem; font-weight: 600;
+      background: var(--accent-light); color: var(--accent);
+      padding: .1rem .45rem; border-radius: 9999px;
+      margin-left: .5rem; vertical-align: middle;
+    }
+    footer {
+      margin-top: 3rem; font-size: .78rem;
+      color: var(--muted); text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>📋 デイリーブリーフィング</h1>
+  <p class="subtitle">毎朝7時（バルセロナ時間）に自動更新</p>
+
+  <a href="archive/{{ latest_date }}.html" class="latest-link">
+    今日のブリーフィングを読む →
+  </a>
+
+  <h2>アーカイブ</h2>
+  <ul class="archive-list">
+    {% for d in recent_dates %}
+    <li>
+      <a href="archive/{{ d }}.html">{{ d }}</a>
+      {% if loop.first %}
+        <span class="latest-tag">最新</span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+
+  <footer>Daily Briefing &times; Claude Haiku</footer>
+</div>
+</body>
+</html>

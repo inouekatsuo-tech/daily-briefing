@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Briefing — 2026-05-27</title>
+  <style>
+    /* ── CSS 変数（ライト / ダーク自動切替）── */
+    :root {
+      --bg:           #f8f9fa;
+      --surface:      #ffffff;
+      --surface2:     #f1f3f5;
+      --text:         #212529;
+      --muted:        #6c757d;
+      --border:       #dee2e6;
+      --accent:       #4361ee;
+      --accent-light: #e8ecfb;
+      --green:        #2dc653;
+      --amber:        #f4a261;
+      --gray:         #adb5bd;
+      --radius:       10px;
+      --shadow:       0 1px 3px rgba(0,0,0,.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #0f1117;
+        --surface:      #1a1d27;
+        --surface2:     #22263a;
+        --text:         #e9ecef;
+        --muted:        #868e96;
+        --border:       #2d3143;
+        --accent-light: #1e2340;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic UI',
+                   'Segoe UI', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── レイアウト ── */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    /* ── ヘッダー ── */
+    header {
+      margin-bottom: 2.5rem;
+    }
+    .nav {
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .nav a { color: var(--muted); }
+    .nav a:hover { color: var(--accent); }
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .date-badge {
+      display: inline-block;
+      margin-top: 0.4rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.2rem 0.75rem;
+      border-radius: 9999px;
+    }
+
+    /* ── カテゴリセクション ── */
+    .category {
+      margin-bottom: 3rem;
+    }
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .category-count {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 0.15rem 0.55rem;
+      border-radius: 9999px;
+      margin-left: auto;
+    }
+
+    /* ── 記事カード ── */
+    .article {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: var(--shadow);
+      transition: border-color .15s;
+    }
+    .article:hover { border-color: var(--accent); }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.45rem;
+    }
+
+    /* スコアバッジ */
+    .score-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 9999px;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .score-high { background: var(--green); }
+    .score-mid  { background: var(--amber); }
+    .score-low  { background: var(--gray);  }
+
+    .source-tag {
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 0.15rem 0.55rem;
+      border-radius: 9999px;
+    }
+
+    /* タイトル */
+    .article-title {
+      font-size: 0.97rem;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .article-title a { color: var(--text); }
+    .article-title a:hover { color: var(--accent); text-decoration: none; }
+
+    /* 要約 */
+    .article-summary {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+      line-height: 1.6;
+    }
+
+    /* スコア理由 */
+    .score-reason {
+      font-size: 0.78rem;
+      color: var(--muted);
+      opacity: .75;
+      font-style: italic;
+    }
+
+    /* 空状態 */
+    .empty {
+      color: var(--muted);
+      font-size: 0.88rem;
+      padding: 1rem;
+      background: var(--surface2);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+
+    /* ── フッター ── */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 2;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="nav">
+      <a href="../index.html">← アーカイブ一覧</a>
+    </div>
+    <h1>📋 デイリーブリーフィング</h1>
+    <span class="date-badge">2026-05-27</span>
+  </header>
+
+  
+  <section class="category">
+    <div class="category-header">
+      <span>💪 健康・トレーニング</span>
+      <span class="category-count">9 件</span>
+    </div>
+
+    
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.2
+          </span>
+          <span class="source-tag">Huberman Lab (YouTube)</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.youtube.com/watch?v=s95KFJ2efm4" target="_blank" rel="noopener noreferrer">
+            Build Muscle, Great Posture & Resilience to Injury | Jeff Cavaliere
+          </a>
+        </div>
+
+        
+        <div class="article-summary">GHが筋骨格系の修復を促進——特に腱・靭帯の回復速度に顕著な効果。40代以降のトレーニング継続に直結する研究。Peter Attiaが用量と適用タイミングを解説。</div>
+        
+
+        
+        <div class="score-reason">💡 筋肥大目標・40代トレーニーに直結</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.2
+          </span>
+          <span class="source-tag">Peter Attia</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://peterattiamd.com/growth-hormone-for-musculoskeletal-system-repair/" target="_blank" rel="noopener noreferrer">
+            Growth hormone for musculoskeletal system repair
+          </a>
+        </div>
+
+        
+        <div class="article-summary">GHが筋骨格系の修復を促進——特に腱・靭帯の回復速度に顕著な効果。40代以降のトレーニング継続に直結する研究。Peter Attiaが用量と適用タイミングを解説。</div>
+        
+
+        
+        <div class="score-reason">💡 筋肥大目標・40代トレーニーに直結</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.2
+          </span>
+          <span class="source-tag">Stronger by Science</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.strongerbyscience.com/isometric-training/" target="_blank" rel="noopener noreferrer">
+            Hold Still: What Does the Evidence Actually Say About Isometric Training for Strength and Hypertrophy?
+          </a>
+        </div>
+
+        
+        <div class="article-summary">GHが筋骨格系の修復を促進——特に腱・靭帯の回復速度に顕著な効果。40代以降のトレーニング継続に直結する研究。Peter Attiaが用量と適用タイミングを解説。</div>
+        
+
+        
+        <div class="score-reason">💡 筋肥大目標・40代トレーニーに直結</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.8
+          </span>
+          <span class="source-tag">Huberman Lab (YouTube)</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.youtube.com/watch?v=MOPqSEK6GvA" target="_blank" rel="noopener noreferrer">
+            Essentials: The Science of Learning & Speaking Languages | Dr. Eddie Chang
+          </a>
+        </div>
+
+        
+        <div class="article-summary">薬剤・サプリの優先順位づけ手法を体系化。クレアチン・マグネシウム・ビタミンDの根拠と用量が具体的に示される。今日から実践できる内容。</div>
+        
+
+        
+        <div class="score-reason">💡 即実践可能なプロトコル</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.8
+          </span>
+          <span class="source-tag">Peter Attia</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://peterattiamd.com/ama85/" target="_blank" rel="noopener noreferrer">
+            #393 ‒ AMA #85: A guide to medications and supplements: determining what to take, what to skip, and how to know if they’re working for you
+          </a>
+        </div>
+
+        
+        <div class="article-summary">薬剤・サプリの優先順位づけ手法を体系化。クレアチン・マグネシウム・ビタミンDの根拠と用量が具体的に示される。今日から実践できる内容。</div>
+        
+
+        
+        <div class="score-reason">💡 即実践可能なプロトコル</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.8
+          </span>
+          <span class="source-tag">Stronger by Science</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.strongerbyscience.com/high-volume-vs-high-intensity/" target="_blank" rel="noopener noreferrer">
+            High volume vs high intensity: which builds more muscle?
+          </a>
+        </div>
+
+        
+        <div class="article-summary">薬剤・サプリの優先順位づけ手法を体系化。クレアチン・マグネシウム・ビタミンDの根拠と用量が具体的に示される。今日から実践できる内容。</div>
+        
+
+        
+        <div class="score-reason">💡 即実践可能なプロトコル</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.3
+          </span>
+          <span class="source-tag">Huberman Lab (YouTube)</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.youtube.com/watch?v=Q2hOryHdgAk" target="_blank" rel="noopener noreferrer">
+            How to Overcome Social Anxiety | Dr. Nick Epley
+          </a>
+        </div>
+
+        
+        <div class="article-summary">高ボリュームvs高強度——結論は「強度×ボリュームのバランス」が最重要。週セット数より質が鍵で、79kgへのリコンプに応用できる。</div>
+        
+
+        
+        <div class="score-reason">💡 現在の減量フェーズに直結</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.3
+          </span>
+          <span class="source-tag">Peter Attia</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://peterattiamd.com/cervical-cancer-screening/" target="_blank" rel="noopener noreferrer">
+            What at-home HPV testing means for cervical cancer screening
+          </a>
+        </div>
+
+        
+        <div class="article-summary">高ボリュームvs高強度——結論は「強度×ボリュームのバランス」が最重要。週セット数より質が鍵で、79kgへのリコンプに応用できる。</div>
+        
+
+        
+        <div class="score-reason">💡 現在の減量フェーズに直結</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.3
+          </span>
+          <span class="source-tag">Stronger by Science</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.strongerbyscience.com/lifting-during-pregnancy/" target="_blank" rel="noopener noreferrer">
+            Is lifting during pregnancy healthy?
+          </a>
+        </div>
+
+        
+        <div class="article-summary">高ボリュームvs高強度——結論は「強度×ボリュームのバランス」が最重要。週セット数より質が鍵で、79kgへのリコンプに応用できる。</div>
+        
+
+        
+        <div class="score-reason">💡 現在の減量フェーズに直結</div>
+        
+      </div>
+      
+    
+  </section>
+  
+  <section class="category">
+    <div class="category-header">
+      <span>🧠 実践心理学・行動科学</span>
+      <span class="category-count">9 件</span>
+    </div>
+
+    
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.9
+          </span>
+          <span class="source-tag">Barking Up The Wrong Tree</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://bakadesuyo.com/2026/05/how-to-handle-conflict/?utm_source=rss&utm_medium=rss&utm_campaign=how-to-handle-conflict" target="_blank" rel="noopener noreferrer">
+            How To Handle Conflict: 7 Secrets From History’s Master Strategist
+          </a>
+        </div>
+
+        
+        <div class="article-summary">歴史上の名交渉人に学ぶ対立解決の7原則。感情的反応を抑える「戦略的共感」が最も効果的と実証。ビジネス交渉・人間関係に即応用できる。</div>
+        
+
+        
+        <div class="score-reason">💡 M&A交渉・人間関係に直結</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.9
+          </span>
+          <span class="source-tag">Ness Labs</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://nesslabs.com/illusion-of-clarity?utm_source=rss&utm_medium=rss&utm_campaign=illusion-of-clarity" target="_blank" rel="noopener noreferrer">
+            The Illusion of Clarity: How to Test Whether you Really Understand Something
+          </a>
+        </div>
+
+        
+        <div class="article-summary">歴史上の名交渉人に学ぶ対立解決の7原則。感情的反応を抑える「戦略的共感」が最も効果的と実証。ビジネス交渉・人間関係に即応用できる。</div>
+        
+
+        
+        <div class="score-reason">💡 M&A交渉・人間関係に直結</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.9
+          </span>
+          <span class="source-tag">Nir Eyal</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.nirandfar.com/antisocial-brain/" target="_blank" rel="noopener noreferrer">
+            How Your Brain Sabotages Your Social Life—and Simple Ways to Fix It
+          </a>
+        </div>
+
+        
+        <div class="article-summary">歴史上の名交渉人に学ぶ対立解決の7原則。感情的反応を抑える「戦略的共感」が最も効果的と実証。ビジネス交渉・人間関係に即応用できる。</div>
+        
+
+        
+        <div class="score-reason">💡 M&A交渉・人間関係に直結</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 7.8
+          </span>
+          <span class="source-tag">Barking Up The Wrong Tree</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://bakadesuyo.com/2026/05/get-better-at-anything/?utm_source=rss&utm_medium=rss&utm_campaign=get-better-at-anything" target="_blank" rel="noopener noreferrer">
+            The Counterintuitive Way To Get Better At Anything
+          </a>
+        </div>
+
+        
+        <div class="article-summary">スキル習得を加速する「困難な練習」の設計法。快適ゾーンから15%外れた負荷が最適学習ゾーン。新事業開発の学習速度を上げるヒント。</div>
+        
+
+        
+        <div class="score-reason">💡 事業開発の学習効率化に応用可</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 7.8
+          </span>
+          <span class="source-tag">Ness Labs</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://nesslabs.com/littlebird-featured-tool?utm_source=rss&utm_medium=rss&utm_campaign=littlebird-featured-tool" target="_blank" rel="noopener noreferrer">
+            Stop explaining yourself to your AI with Alex Green, cofounder of Littlebird
+          </a>
+        </div>
+
+        
+        <div class="article-summary">スキル習得を加速する「困難な練習」の設計法。快適ゾーンから15%外れた負荷が最適学習ゾーン。新事業開発の学習速度を上げるヒント。</div>
+        
+
+        
+        <div class="score-reason">💡 事業開発の学習効率化に応用可</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 7.8
+          </span>
+          <span class="source-tag">Nir Eyal</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.nirandfar.com/parents-need-to-know/" target="_blank" rel="noopener noreferrer">
+            The Truth About Emotions: What Parents Need To Know
+          </a>
+        </div>
+
+        
+        <div class="article-summary">スキル習得を加速する「困難な練習」の設計法。快適ゾーンから15%外れた負荷が最適学習ゾーン。新事業開発の学習速度を上げるヒント。</div>
+        
+
+        
+        <div class="score-reason">💡 事業開発の学習効率化に応用可</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 7.3
+          </span>
+          <span class="source-tag">Barking Up The Wrong Tree</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://bakadesuyo.com/2026/04/writing/?utm_source=rss&utm_medium=rss&utm_campaign=writing" target="_blank" rel="noopener noreferrer">
+            This Is How To Improve Your Writing: 6 Expert Insights
+          </a>
+        </div>
+
+        
+        <div class="article-summary">直感と論理の使い分けマトリックス。高リスク・低情報量の状況では直感が統計より優れることをデータで証明。意思決定の質が上がる。</div>
+        
+
+        
+        <div class="score-reason">💡 投資・事業判断の意思決定に有用</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 7.3
+          </span>
+          <span class="source-tag">Ness Labs</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://nesslabs.com/gut-decision-matrix?utm_source=rss&utm_medium=rss&utm_campaign=gut-decision-matrix" target="_blank" rel="noopener noreferrer">
+            The Gut Decision Matrix: When to Trust Instinct and Intuition
+          </a>
+        </div>
+
+        
+        <div class="article-summary">直感と論理の使い分けマトリックス。高リスク・低情報量の状況では直感が統計より優れることをデータで証明。意思決定の質が上がる。</div>
+        
+
+        
+        <div class="score-reason">💡 投資・事業判断の意思決定に有用</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 7.3
+          </span>
+          <span class="source-tag">Nir Eyal</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.nirandfar.com/find-your-footing/" target="_blank" rel="noopener noreferrer">
+            Finding Your Footing When The Ground Shifts Beneath You
+          </a>
+        </div>
+
+        
+        <div class="article-summary">直感と論理の使い分けマトリックス。高リスク・低情報量の状況では直感が統計より優れることをデータで証明。意思決定の質が上がる。</div>
+        
+
+        
+        <div class="score-reason">💡 投資・事業判断の意思決定に有用</div>
+        
+      </div>
+      
+    
+  </section>
+  
+  <section class="category">
+    <div class="category-header">
+      <span>👑 男の美学・モテ心理学</span>
+      <span class="category-count">6 件</span>
+    </div>
+
+    
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.5
+          </span>
+          <span class="source-tag">Art of Manliness</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.artofmanliness.com/people/fatherhood/how-to-turn-a-boy-into-a-man/" target="_blank" rel="noopener noreferrer">
+            Podcast #810: How to Turn a Boy Into a Man
+          </a>
+        </div>
+
+        
+        <div class="article-summary">少年を男に育てるための通過儀礼の本質——自己鍛錬・責任・奉仕の3軸。現代に欠けたものを歴史と文化から再定義。毎朝読み返したい内容。</div>
+        
+
+        
+        <div class="score-reason">💡 「かっこいい男」の軸を再確認できる必読記事</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.5
+          </span>
+          <span class="source-tag">The Daily Stoic</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://dailystoic.com/what-does-it-mean-to-be-wealthy/" target="_blank" rel="noopener noreferrer">
+            What Does It Mean To Be Wealthy?
+          </a>
+        </div>
+
+        
+        <div class="article-summary">少年を男に育てるための通過儀礼の本質——自己鍛錬・責任・奉仕の3軸。現代に欠けたものを歴史と文化から再定義。毎朝読み返したい内容。</div>
+        
+
+        
+        <div class="score-reason">💡 「かっこいい男」の軸を再確認できる必読記事</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.1
+          </span>
+          <span class="source-tag">Art of Manliness</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.artofmanliness.com/lifestyle/homeownership/mosquito-bucket/" target="_blank" rel="noopener noreferrer">
+            The Cheapest, Easiest, Most Ridiculously Effective Way to Eradicate Mosquitoes From Your Property
+          </a>
+        </div>
+
+        
+        <div class="article-summary">後悔を乗り越えるストア的3戦略——「今できることに集中」「感情を観察者として見る」「過去を変える唯一の方法は今を変えること」。流されない男の基本。</div>
+        
+
+        
+        <div class="score-reason">💡 ストア哲学の実践的エッセンス、毎日リマインドしたい</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.1
+          </span>
+          <span class="source-tag">Mark Manson</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://markmanson.net/four-steps-change-life" target="_blank" rel="noopener noreferrer">
+            4 Simple Steps to Change Your Life
+          </a>
+        </div>
+
+        
+        <div class="article-summary">後悔を乗り越えるストア的3戦略——「今できることに集中」「感情を観察者として見る」「過去を変える唯一の方法は今を変えること」。流されない男の基本。</div>
+        
+
+        
+        <div class="score-reason">💡 ストア哲学の実践的エッセンス、毎日リマインドしたい</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.7
+          </span>
+          <span class="source-tag">The Daily Stoic</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://dailystoic.com/how-to-deal-with-regret-3-stoic-strategies-to-live-free/" target="_blank" rel="noopener noreferrer">
+            How To Deal With Regret ( 3 Stoic Strategies to Live Free)
+          </a>
+        </div>
+
+        
+        <div class="article-summary">万のオファーより「自分の時間」を選んだ理由——Mark Mansonが語る価値の優先順位。何に媚びず、何を守るかを明確にする。</div>
+        
+
+        
+        <div class="score-reason">💡 「流されない」軸を持つための哲学</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.7
+          </span>
+          <span class="source-tag">Mark Manson</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://markmanson.net/5-million-decision" target="_blank" rel="noopener noreferrer">
+            I Chose This Over $5 Million
+          </a>
+        </div>
+
+        
+        <div class="article-summary">万のオファーより「自分の時間」を選んだ理由——Mark Mansonが語る価値の優先順位。何に媚びず、何を守るかを明確にする。</div>
+        
+
+        
+        <div class="score-reason">💡 「流されない」軸を持つための哲学</div>
+        
+      </div>
+      
+    
+  </section>
+  
+
+  <footer>
+    Generated by Daily Briefing System &times; Claude Haiku<br>
+    <a href="../index.html">← アーカイブ一覧に戻る</a>
+  </footer>
+
+</div>
+</body>
+</html>

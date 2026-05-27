@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>カナエル - シェアプロフィール</title>
+
+  <!--
+  ═══════════════════════════════════════════════════════
+  カナエル シェアプロフィールページ — デザイン仕様書
+  ═══════════════════════════════════════════════════════
+  用途: 「自分の夢」シェアボタン押下後に表示する公開プロフィールページ
+  対象: Bubble実装 / Figmaトレース用リファレンス
+  作成: 2026-05-05
+
+  ■ カラーパレット
+    Primary (Teal):        #4ECDC4
+    Primary Dark:          #3BB8AF
+    Primary Light:         #E8F8F7
+    Accent (Star/Like):    #F5A623  ← いいね・星評価
+    Text Primary:          #2C3E50
+    Text Secondary:        #8E9BB0
+    Background:            #F4FAFA
+    Card Background:       #FFFFFF
+    Category Badge BG:     #FFF4E0  (お金・仕事)
+    Category Badge Text:   #F5A623
+
+  ■ フォント
+    - 見出し: font-weight 700, 18–22px
+    - 本文:   font-weight 400, 14–15px
+    - ラベル: font-weight 500, 12px
+    すべて system-ui / Noto Sans JP 想定
+
+  ■ 角丸 (border-radius)
+    - カード:       16px
+    - バッジ/タグ:  20px (pill)
+    - ボタン:       24px (pill)
+    - アバター:     50% (circle)
+
+  ■ シャドウ
+    - カード: box-shadow: 0 2px 12px rgba(0,0,0,0.08)
+
+  ■ Bubbleでの実装メモ
+    - このページは /share/:userID などの公開URL想定
+    - ログイン不要で閲覧可能（Public page）
+    - 「フォローする」ボタン → ログイン済みなら即フォロー、未ログインならSign-upへ遷移
+    - 夢カードは Repeating Group (vertical scroll) で実装
+    - 「もっと見る」= RGのmax itemsを増やすワークフロー
+  ═══════════════════════════════════════════════════════
+  -->
+
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: #F4FAFA;
+      color: #2C3E50;
+      min-height: 100vh;
+    }
+
+    /* ─── Page wrapper (mobile-first, max 430px) ─── */
+    .page {
+      max-width: 430px;
+      margin: 0 auto;
+      padding-bottom: 40px;
+    }
+
+    /* ════════════════════════════════
+       SECTION 1: Hero Header
+       Bubble: Group "Hero"
+       Height: ~280px
+       BG: linear-gradient(160deg, #4ECDC4 0%, #3BB8AF 100%)
+    ════════════════════════════════ */
+    .hero {
+      background: linear-gradient(160deg, #4ECDC4 0%, #3BB8AF 100%);
+      padding: 48px 24px 32px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* アプリロゴ — 左上固定 */
+    .hero-logo {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(255,255,255,0.25);
+      border: 1.5px solid rgba(255,255,255,0.6);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    /* アバター */
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.8);
+      object-fit: cover;
+      background: #ccc;
+      margin: 0 auto 12px;
+      display: block;
+      /* Bubble: Image element, width=80, height=80, border-radius=40 */
+    }
+    .avatar-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.8);
+      background: linear-gradient(135deg, #a8e6e3, #5dc8c2);
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #fff;
+    }
+
+    /* 名前 */
+    .hero-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    /* 属性バッジ行 (年代・性別・都市) */
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .badge {
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    /* 自己紹介テキスト */
+    .hero-bio {
+      font-size: 13px;
+      color: rgba(255,255,255,0.92);
+      line-height: 1.6;
+      max-width: 320px;
+      margin: 0 auto 12px;
+    }
+
+    /* SNSリンク行
+       Bubble: Repeating Group (horizontal) — data source = Current Page User's social_links
+       各セルに: Icon + workflow "Open external link [social_link's url]"
+       social_linksテーブル: type(text), url(text), display_order(number)
+    */
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.20);
+      border: 1.5px solid rgba(255,255,255,0.45);
+      border-radius: 24px;
+      padding: 7px 14px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .social-btn:hover { background: rgba(255,255,255,0.32); }
+    .social-btn svg { flex-shrink: 0; }
+
+    /* ════════════════════════════════
+       SECTION 2: 寿命カウンター
+       Bubble: Group "LifeStats"
+       BG: rgba(255,255,255,0.18) — hero内に重ねる
+    ════════════════════════════════ */
+    .life-counter {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 14px;
+      margin: 16px 0 0;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .life-counter-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+    }
+    .life-counter-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .life-counter-unit {
+      font-size: 11px;
+      color: rgba(255,255,255,0.75);
+    }
+    .life-since {
+      font-size: 11px;
+      color: rgba(255,255,255,0.75);
+      text-align: right;
+    }
+
+    /* ════════════════════════════════
+       SECTION 3: 4つの統計
+       Bubble: Group "StatsRow" — 横並び4カラム
+    ════════════════════════════════ */
+    .stats-row {
+      display: flex;
+      background: #fff;
+      border-bottom: 1px solid #E8F0EE;
+      /* Bubble: Groupで横幅100%、border-bottom追加 */
+    }
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 14px 8px;
+      border-right: 1px solid #E8F0EE;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2C3E50;
+    }
+    .stat-label {
+      font-size: 10px;
+      color: #8E9BB0;
+      margin-top: 2px;
+    }
+    /* 達成済みは Primary色でハイライト */
+    .stat-item.achieved .stat-value { color: #4ECDC4; }
+
+    /* ════════════════════════════════
+       SECTION 4: アクションボタン群
+       Bubble: 2-column button row
+    ════════════════════════════════ */
+    .action-row {
+      display: flex;
+      gap: 10px;
+      padding: 16px 16px 0;
+    }
+    .btn-follow {
+      flex: 1;
+      background: #4ECDC4;
+      color: #fff;
+      border: none;
+      border-radius: 24px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      /* Bubble: Button, bg=#4ECDC4, border-radius=24 */
+    }
+    .btn-share {
+      flex: 1;
+      background: #fff;
+      color: #4ECDC4;
+      border: 2px solid #4ECDC4;
+      border-radius: 24px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* ════════════════════════════════
+       SECTION 5: 夢リスト (バケットリスト)
+       Bubble: Repeating Group
+         - Layout: vertical
+         - Data source: Search for Dreams
+           (User = Current Page User, is_public = yes)
+           sorted by: priority desc, created_at desc
+         - Max items: 5 (初期) → 「もっと見る」で +5
+    ════════════════════════════════ */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 16px 12px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2C3E50;
+    }
+    .section-count {
+      font-size: 12px;
+      color: #4ECDC4;
+      font-weight: 600;
+    }
+
+    /* 夢カード */
+    .dream-card {
+      background: #fff;
+      border-radius: 16px;
+      margin: 0 16px 12px;
+      padding: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      /*
+        Bubble: Repeating Group cell
+        border-radius=16, shadow ON
+      */
+    }
+    .dream-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    /* カテゴリアイコン枠 */
+    .category-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #FFF4E0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      /*
+        Bubble: Icon/Text element
+        色はカテゴリごとに条件分岐
+        お金・仕事: bg=#FFF4E0, icon=#F5A623
+        旅行:       bg=#E8F4FF, icon=#3B82F6
+        健康:       bg=#F0FFF0, icon=#22C55E
+      */
+    }
+    .dream-card-content { flex: 1; }
+    .dream-category {
+      font-size: 11px;
+      font-weight: 600;
+      color: #F5A623;
+      margin-bottom: 2px;
+    }
+    .dream-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2C3E50;
+      margin-bottom: 6px;
+    }
+    /* 達成済みは打ち消し線 */
+    .dream-title.done {
+      text-decoration: line-through;
+      color: #8E9BB0;
+    }
+
+    /* 日程・予算行 */
+    .dream-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+      color: #8E9BB0;
+      margin-bottom: 8px;
+    }
+    .dream-meta span { display: flex; align-items: center; gap: 3px; }
+
+    /* 優先度 星 */
+    .stars { color: #F5A623; font-size: 12px; letter-spacing: 1px; }
+    .star-empty { color: #D5DCE8; }
+
+    /* 達成バッジ */
+    .achieved-badge {
+      display: inline-block;
+      background: #E8F8F7;
+      color: #4ECDC4;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid #4ECDC4;
+    }
+
+    /* 夢サムネイル */
+    .dream-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #E8F0EE;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    /* カード下段: いいね・コメント・閲覧 */
+    .dream-card-footer {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #F0F5F5;
+      font-size: 12px;
+      color: #8E9BB0;
+    }
+    .dream-card-footer span { display: flex; align-items: center; gap: 3px; }
+    .like-icon { color: #F87171; }
+
+    /* ════════════════════════════════
+       SECTION 6: もっと見るボタン
+       Bubble: Button, Show more workflow
+    ════════════════════════════════ */
+    .btn-more {
+      display: block;
+      margin: 0 16px 20px;
+      background: #E8F8F7;
+      color: #4ECDC4;
+      border: none;
+      border-radius: 24px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      width: calc(100% - 32px);
+    }
+
+    /* ════════════════════════════════
+       SECTION 7: アプリ誘導バナー
+       Bubble: Group "AppBanner"
+       ※ ログインしていないユーザーに表示
+    ════════════════════════════════ */
+    .app-banner {
+      margin: 0 16px 20px;
+      background: linear-gradient(135deg, #4ECDC4, #3BB8AF);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    .app-banner h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .app-banner p  { font-size: 12px; color: rgba(255,255,255,0.88); margin-bottom: 14px; line-height: 1.5; }
+    .btn-download {
+      display: inline-block;
+      background: #fff;
+      color: #4ECDC4;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 28px;
+      border-radius: 24px;
+      text-decoration: none;
+      /* Bubble: Link element → App Store / Google Play URL */
+    }
+
+    /* ════════════════════════════════
+       フッター (軽量)
+    ════════════════════════════════ */
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #B0BEC5;
+      padding: 8px 16px 24px;
+    }
+    .footer a { color: #4ECDC4; text-decoration: none; }
+  </style>
+</head>
+
+<body>
+<div class="page">
+
+  <!-- ══ SECTION 1+2: Hero ══ -->
+  <div class="hero">
+    <div class="hero-logo">口＋ カナエル</div>
+
+    <div class="avatar-placeholder">😊</div>
+    <!-- 実装時: <img class="avatar" src="[User's Profile Photo URL]" alt="avatar"> -->
+
+    <div class="hero-name">かつお</div>
+
+    <div class="hero-badges">
+      <span class="badge">40代</span>
+      <span class="badge">男性</span>
+      <span class="badge">東京都</span>
+    </div>
+
+    <p class="hero-bio">
+      カナエルの共同創業者です！<br>
+      みんなでバケットリストをどんどん叶えていきましょう！
+    </p>
+
+    <!--
+      Bubble: Repeating Group "SocialLinks"
+      - Data source: Search for Social_Links [User = Current Page User] sorted by display_order asc
+      - Only show cell if url is not empty
+      - ワークフロー: When clicked → Open external link [Current Cell's Social_Link's url]
+    -->
+    <div class="social-links">
+      <!-- YouTube -->
+      <a class="social-btn" href="#" title="YouTube">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1C4.5 20.5 12 20.5 12 20.5s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.75 15.5V8.5l6.25 3.5-6.25 3.5z"/></svg>
+        YouTube
+      </a>
+      <!-- Instagram -->
+      <a class="social-btn" href="#" title="Instagram">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg>
+        Instagram
+      </a>
+      <!-- Facebook -->
+      <a class="social-btn" href="#" title="Facebook">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        Facebook
+      </a>
+      <!-- LINE -->
+      <a class="social-btn" href="#" title="LINE">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 5.92 2 10.72c0 3.27 2.05 6.15 5.18 7.82-.22.82-.82 2.97-.94 3.44-.15.58.21.57.44.42.18-.12 2.9-1.97 4.08-2.77.41.06.83.09 1.24.09 5.52 0 10-3.92 10-8.72S17.52 2 12 2z"/></svg>
+        LINE
+      </a>
+      <!-- TikTok -->
+      <a class="social-btn" href="#" title="TikTok">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.17 8.17 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+        TikTok
+      </a>
+      <!-- X (Twitter) -->
+      <a class="social-btn" href="#" title="X">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X
+      </a>
+      <!-- メール -->
+      <a class="social-btn" href="#" title="メール">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+        メール
+      </a>
+    </div>
+
+    <!-- 寿命カウンター -->
+    <div class="life-counter">
+      <div>
+        <div class="life-counter-label">89歳まであと</div>
+        <div>
+          <span class="life-counter-value">14,698</span>
+          <span class="life-counter-unit"> 日</span>
+        </div>
+      </div>
+      <div class="life-since">
+        生まれて<br><strong style="color:#fff;font-size:15px;">17,809</strong> 日
+      </div>
+    </div>
+    <!--
+      Bubble計算式:
+        「89歳まであと」= date_diff(
+          Current User's birthday + 89years, Current date, "days"
+        )
+        「生まれて」= date_diff(Current date, Current User's birthday, "days")
+    -->
+  </div>
+
+  <!-- ══ SECTION 3: Stats ══ -->
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-value">37</div>
+      <div class="stat-label">進行中</div>
+    </div>
+    <div class="stat-item achieved">
+      <div class="stat-value">5</div>
+      <div class="stat-label">達成済み</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">10</div>
+      <div class="stat-label">フォロー</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">16</div>
+      <div class="stat-label">フォロワー</div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 4: Actions ══ -->
+  <div class="action-row">
+    <button class="btn-follow">＋ フォローする</button>
+    <button class="btn-share">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      シェア
+    </button>
+  </div>
+
+  <!-- ══ SECTION 5: 夢リスト ══ -->
+  <div class="section-header">
+    <span class="section-title">夢リスト</span>
+    <span class="section-count">37件 進行中 ✦ 5件 達成済み</span>
+  </div>
+
+  <!-- カード例1: 進行中 -->
+  <div class="dream-card">
+    <div class="dream-card-header">
+      <div class="category-icon">💴</div>
+      <div class="dream-card-content">
+        <div class="dream-category">お金・仕事</div>
+        <div class="dream-title">調味料開発！</div>
+        <div class="dream-meta">
+          <span>📅 開始: 2026/4/30</span>
+          <span>🎯 2027/1/1</span>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <span class="stars">★★★★<span class="star-empty">★</span></span>
+          <span style="font-size:12px; color:#4ECDC4; font-weight:700;">¥1,000,000</span>
+        </div>
+      </div>
+      <div class="dream-thumb">🍶</div>
+    </div>
+    <div class="dream-card-footer">
+      <span><span class="like-icon">♥</span> 1</span>
+      <span>💬 0</span>
+      <span>👁 43</span>
+    </div>
+  </div>
+
+  <!-- カード例2: 達成済み -->
+  <div class="dream-card">
+    <div class="dream-card-header">
+      <div class="category-icon" style="background:#E8F4FF; color:#3B82F6;">✈️</div>
+      <div class="dream-card-content">
+        <div class="dream-category" style="color:#3B82F6;">旅行・体験</div>
+        <div class="dream-title done">家族でスペイン移住</div>
+        <div class="dream-meta">
+          <span>📅 2024/8</span>
+          <span>🎯 2024/8/1</span>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <span class="stars">★★★★★</span>
+          <span class="achieved-badge">✓ 達成済み</span>
+        </div>
+      </div>
+      <div class="dream-thumb">🇪🇸</div>
+    </div>
+    <div class="dream-card-footer">
+      <span><span class="like-icon">♥</span> 24</span>
+      <span>💬 8</span>
+      <span>👁 312</span>
+    </div>
+  </div>
+
+  <!-- カード例3 -->
+  <div class="dream-card">
+    <div class="dream-card-header">
+      <div class="category-icon" style="background:#F0FFF0; color:#22C55E;">💪</div>
+      <div class="dream-card-content">
+        <div class="dream-category" style="color:#22C55E;">健康・美容</div>
+        <div class="dream-title">体脂肪率12%以下を維持</div>
+        <div class="dream-meta">
+          <span>📅 2026/1/1</span>
+          <span>🎯 2026/12/31</span>
+        </div>
+        <span class="stars">★★★<span class="star-empty">★★</span></span>
+      </div>
+      <div class="dream-thumb">🏋️</div>
+    </div>
+    <div class="dream-card-footer">
+      <span><span class="like-icon">♥</span> 7</span>
+      <span>💬 2</span>
+      <span>👁 88</span>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 6: もっと見る ══ -->
+  <button class="btn-more">もっと見る（残り34件）</button>
+  <!--
+    Bubble workflow:
+    When "もっと見る" is clicked
+    → Set state "visible_count" += 5
+    → Repeating Group max items = visible_count
+  -->
+
+  <!-- ══ SECTION 7: アプリ誘導バナー ══ -->
+  <div class="app-banner">
+    <h3>あなたの夢リストを作ろう</h3>
+    <p>カナエルはバケットリストを作って<br>シェアできる無料アプリです</p>
+    <a class="btn-download" href="#">無料でダウンロード</a>
+  </div>
+  <!--
+    Bubble: このGroupは「Current User is logged out」の時のみ表示
+    Condition: This Group is visible when Current User's is logged out = yes
+  -->
+
+  <div class="footer">
+    <a href="#">カナエル</a> — 夢を叶えるバケットリストアプリ
+  </div>
+
+</div>
+</body>
+</html>

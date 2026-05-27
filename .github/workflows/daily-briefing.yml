@@ -1,0 +1,56 @@
+name: Daily Briefing
+
+on:
+  schedule:
+    # UTC 5:00 = Barcelona 夏時間(CEST) 7:00
+    # 冬時間(CET)は 6:00 になる（11月〜3月は手動で "0 6 * * *" に変更）
+    - cron: "0 5 * * *"
+
+  # 手動実行ボタン（テスト・デバッグ用）
+  workflow_dispatch:
+
+jobs:
+  briefing:
+    name: Generate & Publish Daily Briefing
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # docs/ を push するために必要
+
+    steps:
+      # ── 1. チェックアウト ─────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ── 2. Python セットアップ ────────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # ── 3. 依存インストール ───────────────────────────────────────────────
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── 4. ブリーフィング実行 ─────────────────────────────────────────────
+      - name: Run briefing
+        env:
+          ANTHROPIC_API_KEY:   ${{ secrets.ANTHROPIC_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          # GitHub Variables で設定: https://github.com/<user>/<repo>/settings/variables/actions
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: python -m src.main
+
+      # ── 5. 生成ファイルをコミット & プッシュ ──────────────────────────────
+      - name: Commit and push docs
+        run: |
+          git config user.name  "Daily Briefing Bot"
+          git config user.email "bot@daily-briefing.local"
+          git add docs/
+          # 差分がなければスキップ（冪等）
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "briefing: $(date -u +%Y-%m-%d)"
+          git push
