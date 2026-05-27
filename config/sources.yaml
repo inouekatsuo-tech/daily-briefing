@@ -41,73 +41,78 @@ categories:
         type: rss
         url: "https://markmanson.net/feed"
 
-  # ─── Phase 2: 追加カテゴリ（コメントアウト済み → 有効化するだけ）───
+  # ─── カテゴリ2: ビジネス・M&A ────────────────────────────────────────
+  - id: business
+    name: "ビジネス・M&A"
+    emoji: "💼"
+    max_items_per_source: 3
+    sources:
+      - name: "TechCrunch M&A"         # Axios Pro Rata は有料 → 代替
+        type: rss
+        url: "https://techcrunch.com/category/mergers-acquisitions/feed/"
+      - name: "Reuters Business"
+        type: rss
+        url: "https://feeds.reuters.com/reuters/businessNews"
+      - name: "PitchBook News"
+        type: rss
+        url: "https://pitchbook.com/news/rss"
+      - name: "Nikkei Asia"            # 日経M&A有料版 → 無料の英語版
+        type: rss
+        url: "https://asia.nikkei.com/rss/feed/nar"
 
-  # - id: business
-  #   name: "ビジネス・M&A"
-  #   emoji: "💼"
-  #   max_items_per_source: 3
-  #   sources:
-  #     - name: "Axios Pro Rata"
-  #       type: rss
-  #       url: "https://api.axios.com/feed/pro-rata"
-  #     - name: "Reuters Deals"
-  #       type: rss
-  #       url: "https://feeds.reuters.com/reuters/businessNews"
-  #     - name: "PitchBook News"
-  #       type: rss
-  #       url: "https://pitchbook.com/news/rss"
-  #     - name: "日経M&A"
-  #       type: rss
-  #       url: "https://www.nikkei.com/rss/index.aspx?cf=ma"
+  # ─── カテゴリ3: AI・最新技術 ──────────────────────────────────────────
+  - id: ai_tech
+    name: "AI・最新技術"
+    emoji: "🤖"
+    max_items_per_source: 3
+    sources:
+      - name: "Hacker News"
+        type: rss
+        url: "https://hnrss.org/frontpage"
+      - name: "Anthropic Blog"
+        type: rss
+        url: "https://www.anthropic.com/rss.xml"
+      - name: "OpenAI News"            # /blog/rss → /news/rss.xml に修正
+        type: rss
+        url: "https://openai.com/news/rss.xml"
+      - name: "The Batch (deeplearning.ai)"
+        type: rss
+        url: "https://www.deeplearning.ai/the-batch/feed/"
+      - name: "Benedict Evans"         # Stratechery は有料 → 代替
+        type: rss
+        url: "https://www.ben-evans.com/benedictevans/rss.xml"
+      - name: "Latent Space"
+        type: rss
+        url: "https://www.latent.space/feed"
 
-  # - id: ai_tech
-  #   name: "AI・最新技術"
-  #   emoji: "🤖"
-  #   max_items_per_source: 3
-  #   sources:
-  #     - name: "Hacker News"
-  #       type: rss
-  #       url: "https://hnrss.org/frontpage"
-  #     - name: "Anthropic Blog"
-  #       type: rss
-  #       url: "https://www.anthropic.com/rss.xml"
-  #     - name: "OpenAI Blog"
-  #       type: rss
-  #       url: "https://openai.com/blog/rss"
-  #     - name: "The Batch (deeplearning.ai)"
-  #       type: rss
-  #       url: "https://www.deeplearning.ai/the-batch/feed/"
-  #     - name: "Stratechery"
-  #       type: rss
-  #       url: "https://stratechery.com/feed/"
-  #     - name: "Latent Space"
-  #       type: rss
-  #       url: "https://www.latent.space/feed"
+  # ─── カテゴリ4: 生産性・自動化 ───────────────────────────────────────
+  - id: productivity
+    name: "生産性・自動化"
+    emoji: "⚡"
+    max_items_per_source: 3
+    sources:
+      - name: "IndieHackers"
+        type: rss
+        url: "https://www.indiehackers.com/feed.xml"
+      - name: "Hacker News (productivity)"
+        type: rss
+        url: "https://hnrss.org/newest?q=productivity&count=10"
+      - name: "Cal Newport"
+        type: rss
+        url: "https://www.calnewport.com/blog/feed/"
 
-  # - id: productivity
-  #   name: "生産性・自動化"
-  #   emoji: "⚡"
-  #   max_items_per_source: 3
-  #   sources:
-  #     - name: "IndieHackers"
-  #       type: rss
-  #       url: "https://www.indiehackers.com/feed.xml"
-  #     - name: "Hacker News (productivity)"
-  #       type: rss
-  #       url: "https://hnrss.org/newest?q=productivity&count=10"
-  #     - name: "Cal Newport"
-  #       type: rss
-  #       url: "https://www.calnewport.com/blog/feed/"
-
-  # - id: books
-  #   name: "本・ベストセラー"
-  #   emoji: "📚"
-  #   max_items_per_source: 3
-  #   sources:
-  #     - name: "Marginal Revolution"
-  #       type: rss
-  #       url: "https://marginalrevolution.com/feed"
-  #     - name: "Goodreads (listopia)"
-  #       type: rss
-  #       url: "https://www.goodreads.com/list/best_of_year/2024.rss"
+  # ─── カテゴリ5: 本・ベストセラー ─────────────────────────────────────
+  - id: books
+    name: "本・ベストセラー"
+    emoji: "📚"
+    max_items_per_source: 3
+    sources:
+      - name: "Marginal Revolution"
+        type: rss
+        url: "https://marginalrevolution.com/feed"
+      - name: "NYT Books"              # NYT Bestsellers 追加（無料RSS）
+        type: rss
+        url: "https://rss.nytimes.com/services/xml/rss/nyt/Books.xml"
+      - name: "Book Riot"             # Goodreads RSS廃止済み → 代替
+        type: rss
+        url: "https://bookriot.com/feed/"
