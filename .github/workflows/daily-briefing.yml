@@ -2,9 +2,9 @@ name: Daily Briefing
 
 on:
   schedule:
-    # UTC 5:00 = Barcelona 夏時間(CEST) 7:00
-    # 冬時間(CET)は 6:00 になる（11月〜3月は手動で "0 6 * * *" に変更）
-    - cron: "0 5 * * *"
+    # UTC 4:30 = Barcelona 夏時間(CEST) 6:30
+    # 冬時間(CET)は 5:30 になる（11月〜3月は手動で "30 5 * * *" に変更）
+    - cron: "30 4 * * *"
 
   # 手動実行ボタン（テスト・デバッグ用）
   workflow_dispatch:
