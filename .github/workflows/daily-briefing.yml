@@ -9,6 +9,9 @@ on:
   # 手動実行ボタン（テスト・デバッグ用）
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   briefing:
     name: Generate & Publish Daily Briefing
