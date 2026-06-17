@@ -11,3 +11,6 @@ venv/
 
 # テスト・一時ファイル
 *.log
+
+# Claude Code ローカル設定（リポジトリに含めない）
+.claude/settings.local.json
