@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Briefing — 2026-07-01</title>
+  <style>
+    /* ── CSS 変数（ライト / ダーク自動切替）── */
+    :root {
+      --bg:           #f8f9fa;
+      --surface:      #ffffff;
+      --surface2:     #f1f3f5;
+      --text:         #212529;
+      --muted:        #6c757d;
+      --border:       #dee2e6;
+      --accent:       #4361ee;
+      --accent-light: #e8ecfb;
+      --green:        #2dc653;
+      --amber:        #f4a261;
+      --gray:         #adb5bd;
+      --radius:       10px;
+      --shadow:       0 1px 3px rgba(0,0,0,.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #0f1117;
+        --surface:      #1a1d27;
+        --surface2:     #22263a;
+        --text:         #e9ecef;
+        --muted:        #868e96;
+        --border:       #2d3143;
+        --accent-light: #1e2340;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic UI',
+                   'Segoe UI', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── レイアウト ── */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    /* ── ヘッダー ── */
+    header {
+      margin-bottom: 2.5rem;
+    }
+    .nav {
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .nav a { color: var(--muted); }
+    .nav a:hover { color: var(--accent); }
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .date-badge {
+      display: inline-block;
+      margin-top: 0.4rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.2rem 0.75rem;
+      border-radius: 9999px;
+    }
+
+    /* ── カテゴリセクション ── */
+    .category {
+      margin-bottom: 3rem;
+    }
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .category-count {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 0.15rem 0.55rem;
+      border-radius: 9999px;
+      margin-left: auto;
+    }
+
+    /* ── 記事カード ── */
+    .article {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: var(--shadow);
+      transition: border-color .15s;
+    }
+    .article:hover { border-color: var(--accent); }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.45rem;
+    }
+
+    /* スコアバッジ */
+    .score-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 9999px;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .score-high { background: var(--green); }
+    .score-mid  { background: var(--amber); }
+    .score-low  { background: var(--gray);  }
+
+    .source-tag {
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 0.15rem 0.55rem;
+      border-radius: 9999px;
+    }
+
+    /* タイトル */
+    .article-title {
+      font-size: 0.97rem;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .article-title a { color: var(--text); }
+    .article-title a:hover { color: var(--accent); text-decoration: none; }
+
+    /* 要約 */
+    .article-summary {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+      line-height: 1.6;
+    }
+
+    /* スコア理由 */
+    .score-reason {
+      font-size: 0.78rem;
+      color: var(--muted);
+      opacity: .75;
+      font-style: italic;
+    }
+
+    /* 空状態 */
+    .empty {
+      color: var(--muted);
+      font-size: 0.88rem;
+      padding: 1rem;
+      background: var(--surface2);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+
+    /* ── フッター ── */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 2;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="nav">
+      <a href="../index.html">← アーカイブ一覧</a>
+    </div>
+    <h1>📋 デイリーブリーフィング</h1>
+    <span class="date-badge">2026-07-01</span>
+  </header>
+
+  
+  <section class="category">
+    <div class="category-header">
+      <span>💪 健康・トレーニング・心理学</span>
+      <span class="category-count">18 件</span>
+    </div>
+
+    
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.5
+          </span>
+          <span class="source-tag">Barking Up The Wrong Tree</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://bakadesuyo.com/2026/06/self-sabotage/?utm_source=rss&utm_medium=rss&utm_campaign=self-sabotage" target="_blank" rel="noopener noreferrer">
+            The Uncomfortable Reason You Keep Self-Sabotaging: 6 Secrets From Philosophy’s Most Honest Madman
+          </a>
+        </div>
+
+        
+        <div class="article-summary">自己破壊は無意識的な習慣ではなく、深層で「今のままでいたい」という一貫した投資が機能している。自分の本当の価値観と行動の乖離を直視する必要がある。</div>
+        
+
+        
+        <div class="score-reason">💡 「流されない男」「自分の軸」を大切にするユーザーにとって、自己破壊的パターンの本質的メカニズムを理解することは、本当の意志的行動と自己欺瞞の区別を可能にする最高度の自己認識。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.5
+          </span>
+          <span class="source-tag">The Daily Stoic</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://dailystoic.com/how-to-deal-with-regret-3-stoic-strategies-to-live-free/" target="_blank" rel="noopener noreferrer">
+            How To Deal With Regret ( 3 Stoic Strategies to Live Free)
+          </a>
+        </div>
+
+        
+        <div class="article-summary">ストア哲学（セネカ）に基づく後悔対策：過去の苦しみはもはや自分に関わらず、未来の不安もまだ関わらない。今を支配する力に集中することで精神的自由を得る。</div>
+        
+
+        
+        <div class="score-reason">💡 ストア哲学への共感が深く、「流されない男」「自分の軸」の実装に不可欠。過去への執着と未来不安から解放される3つの実践戦略は、人生後半の円熟度を高めるために最も重要な思想的ツール。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.5
+          </span>
+          <span class="source-tag">Mark Manson</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://markmanson.net/5-million-decision" target="_blank" rel="noopener noreferrer">
+            I Chose This Over $5 Million
+          </a>
+        </div>
+
+        
+        <div class="article-summary">Mark Mansonが出版5百万ドル契約を辞退。2016-2022年の「執筆モード疲弊」から2022年以降、AIと起業の新時代へ回帰。自分の真のエネルギー源を優先する決断。</div>
+        
+
+        
+        <div class="score-reason">💡 連続起業家として同じキャリア段階にあり、200億規模事業を目指すユーザーにとって、大型マネタイズ機会を敢えて断り、内的動機と創造的自由を優先する判断基準は、人生戦略の根本的リコーディブレーション。最高度の参考事例。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.0
+          </span>
+          <span class="source-tag">Huberman Lab (YouTube)</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.youtube.com/watch?v=WWe4up63hb4" target="_blank" rel="noopener noreferrer">
+            Essentials: The Science of Eating for Health, Fat Loss & Lean Muscle | Dr. Layne Norton
+          </a>
+        </div>
+
+        
+        <div class="article-summary">Dr. Layne Nortonによる栄養科学の実践解：エネルギーバランス、タンパク質・食物繊維の最適摂取量、人工甘味料・種子油の選択が、体脂肪率低下と除脂肪量維持に直結する。</div>
+        
+
+        
+        <div class="score-reason">💡 現在82kg→79kg目標の実現に、単なるカロリー制限ではなく栄養学的根拠に基づいた戦略が必要。ジムA/Bスプリットとの組み合わせで、科学的なボディコンポジション達成が可能になるから。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.0
+          </span>
+          <span class="source-tag">Barking Up The Wrong Tree</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://bakadesuyo.com/2026/06/william-james/?utm_source=rss&utm_medium=rss&utm_campaign=william-james" target="_blank" rel="noopener noreferrer">
+            How To Get Unstuck: 6 Secrets From Philosophy
+          </a>
+        </div>
+
+        
+        <div class="article-summary">人生の制約（肉体の衰退・心の抵抗・時間の有限性）は普遍的。受け身ではなく、制約のなかで自分たちが何をするかが問題。哲学的応答が示される。</div>
+        
+
+        
+        <div class="score-reason">💡 48歳で「老いを言い訳にせず円熟の魅力を最大化する」という明確な美学を持つユーザーにとって、制約のなかで主体的に動く哲学的フレームワークは、人生後半の行動原理の再確立に直結するから。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.0
+          </span>
+          <span class="source-tag">Mark Manson</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://markmanson.net/four-steps-change-life" target="_blank" rel="noopener noreferrer">
+            4 Simple Steps to Change Your Life
+          </a>
+        </div>
+
+        
+        <div class="article-summary">人生変容の確実なフレームワーク：①自分が本当に大切にすること全部を書く②優先順位付け③トップ3に絞る④生活全体をこの3つに再編成する。決議ではなく構造化の力。</div>
+        
+
+        
+        <div class="score-reason">💡 「自分の軸で動く」を実践するユーザーにとって、抽象的な決意ではなく、確実な行動構造化フレームワークは即座に実行可能。カナエル開発・ビジネス優先度の明確化に直結。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.5
+          </span>
+          <span class="source-tag">Huberman Lab (YouTube)</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.youtube.com/watch?v=Zz8chJwh3S4" target="_blank" rel="noopener noreferrer">
+            Movement Practice to Strengthen Your Mind-Body Connection | Ido Portal
+          </a>
+        </div>
+
+        
+        <div class="article-summary">Ido Portalの運動プラクティスは、遊び心のある動きを通じて心身接続を強化し、ストレス反応を自動化から抜け出させる。筋トレとは異なる「playful movement」が精神的柔軟性と自己理解を深める。</div>
+        
+
+        
+        <div class="score-reason">💡 パデル実施中の人として、運動の質的側面（遊び心・フロー・ストレス反応の再配線）への深い知見は、単なる筋肥大目標を超えた自己最適化と「余裕のある男」の体現に直結するから。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.5
+          </span>
+          <span class="source-tag">Art of Manliness</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.artofmanliness.com/culture/history/podcast-1123-george-washington-the-man-behind-the-monument/" target="_blank" rel="noopener noreferrer">
+            Podcast #1,123: George Washington — The Man Behind the Monument
+          </a>
+        </div>
+
+        
+        <div class="article-summary">ジョージ・ワシントンは野心的で自学的、名誉を重視し、歴史的責任に苦悩し続けた実在の人物。表面的な偶像化ではなく、その内面の葛藤と成長が特筆される。</div>
+        
+
+        
+        <div class="score-reason">💡 ストア哲学・マルクス・アウレリウス的精神性に共感し、「品格・存在感・余裕」を磨く男性哲学を志向するユーザーにとって、歴史上の大人物がいかに自分の軸を貫き重責を引き受けたかは、高い示唆を与える。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.0
+          </span>
+          <span class="source-tag">Peter Attia</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://peterattiamd.com/ama86/" target="_blank" rel="noopener noreferrer">
+            #398 ‒ AMA #86: GLP-1 RAs and muscle loss: new data, better questions, and how to preserve muscle during weight loss
+          </a>
+        </div>
+
+        
+        <div class="article-summary">GLP-1製剤使用時の筋肉損失リスク対策：十分なタンパク質摂取と適切なレジスタンストレーニングにより、除脂肪量の喪失をほぼ回避可能。体重低下中の筋肉維持戦略が確立されている。</div>
+        
+
+        
+        <div class="score-reason">💡 健康最適化・長寿への関心とボディコンポジション目標の両立を目指す際、GLP-1やその他の医療介入との相互作用を理解することは、後年の「円熟の魅力」実現に不可欠だから。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.0
+          </span>
+          <span class="source-tag">Stronger by Science</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.strongerbyscience.com/isometric-training/" target="_blank" rel="noopener noreferrer">
+            Hold Still: What Does the Evidence Actually Say About Isometric Training for Strength and Hypertrophy?
+          </a>
+        </div>
+
+        
+        <div class="article-summary">アイソメトリックトレーニングは従来の動的トレーニングより劣るという通説は根拠薄く、実証研究では筋力・筋肥大双方で有効。実装戦略が鍵となる。</div>
+        
+
+        
+        <div class="score-reason">💡 時間効率と実行可能性を重視する起業家にとって、ジムA/Bスプリットにアイソメトリクスを統合することで、質を落とさず時間配分を最適化できるトレーニング革新。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.0
+          </span>
+          <span class="source-tag">Ness Labs</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://nesslabs.com/illusion-of-clarity?utm_source=rss&utm_medium=rss&utm_campaign=illusion-of-clarity" target="_blank" rel="noopener noreferrer">
+            The Illusion of Clarity: How to Test Whether you Really Understand Something
+          </a>
+        </div>
+
+        
+        <div class="article-summary">「生成効果」：情報を受け動的に消費するのではなく、自分で咀嚼・出力することで、理解と記憶が飛躍的に深化する。真の理解度をテストする実装方法がある。</div>
+        
+
+        
+        <div class="score-reason">💡 起業家・学習者として、知識の浅い表層理解から脱却し、実装可能な深い理解へ移行するためのメタ認知スキル。自己最適化と思考の精度向上に直結。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.0
+          </span>
+          <span class="source-tag">The Daily Stoic</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://dailystoic.com/what-does-it-mean-to-be-wealthy/" target="_blank" rel="noopener noreferrer">
+            What Does It Mean To Be Wealthy?
+          </a>
+        </div>
+
+        
+        <div class="article-summary">富とは金銭量ではなく、心の自由度。多くの富豪は欲望に支配される「熱に侵された」状態。真の豊かさは節度と充足感にある。</div>
+        
+
+        
+        <div class="score-reason">💡 連続起業家として14億円規模の出口経験があり、現在200億目標のユーザーにとって、金銭と幸福の非対称性を理解することは、起業動機の純度を保つ精神的アンカーになるから。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 7.5
+          </span>
+          <span class="source-tag">Stronger by Science</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.strongerbyscience.com/correlation-strength-hypertrophy/" target="_blank" rel="noopener noreferrer">
+            Is the Correlation Between Hypertrophy and Strength Gains Stronger Than We Realized?
+          </a>
+        </div>
+
+        
+        <div class="article-summary">初心者の筋肥大と筋力向上の相関は従来予想より高いが、その関係性は直線的ではなく、筋力向上のメカニズムはより複雑である。</div>
+        
+
+        
+        <div class="score-reason">💡 ジムA/Bスプリット筋肥大目的のトレーニングプログラム設計において、筋肥大と筋力の非対称的関係を理解することで、より効率的な目標設定が可能になるから。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 7.0
+          </span>
+          <span class="source-tag">Nir Eyal</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.nirandfar.com/antisocial-brain/" target="_blank" rel="noopener noreferrer">
+            How Your Brain Sabotages Your Social Life—and Simple Ways to Fix It
+          </a>
+        </div>
+
+        
+        <div class="article-summary">社会的躊躇は脳の回避本能から生まれる。明確な動機づけと実装インテンション（when-then計画）で、躊躇パターンを破壊できる。</div>
+        
+
+        
+        <div class="score-reason">💡 人間関係と社会的存在感を大切にするユーザーにとって、躊躇の神経生物学的メカニズムと解決策は参考になるが、他の優先度の高い記事に比べると中程度。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 6.5
+          </span>
+          <span class="source-tag">Peter Attia</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://peterattiamd.com/the-trouble-with-good-cholesterol/" target="_blank" rel="noopener noreferrer">
+            The trouble with “good cholesterol”
+          </a>
+        </div>
+
+        
+        <div class="article-summary">HDL-C（善玉コレステロール）が高いからといって心血管リスク低下とは限らず、単純な指標では不十分。より詳細な血清脂質パターン分析が必要。</div>
+        
+
+        
+        <div class="score-reason">💡 長寿・健康最適化への関心は高いが、記事のサマリーのみでは具体的な対策が不明確。フルコンテンツへのアクセスがなければ行動につながりにくい。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 6.5
+          </span>
+          <span class="source-tag">Ness Labs</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://nesslabs.com/riseguide-featured-tool?utm_source=rss&utm_medium=rss&utm_campaign=riseguide-featured-tool" target="_blank" rel="noopener noreferrer">
+            Expert-powered self-improvement with Oleksandr Matsiuk, founder of RiseGuide
+          </a>
+        </div>
+
+        
+        <div class="article-summary">RiseGuideはAIと専門家が融合した自己改善アプリ。パーソナライズされた改善プランを提供する。</div>
+        
+
+        
+        <div class="score-reason">💡 カナエル開発中のユーザーにとって、競合・参考になるツール。ただし記事のサマリーのみでは実装の詳細や差別化が不明確。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 5.0
+          </span>
+          <span class="source-tag">Nir Eyal</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.nirandfar.com/parents-need-to-know/" target="_blank" rel="noopener noreferrer">
+            The Truth About Emotions: What Parents Need To Know
+          </a>
+        </div>
+
+        
+        <div class="article-summary">感情は「抑圧・制御」すべき敵ではなく、認識・受容すべき信号。親自身の感情リテラシーが、子どもの感情調整能力を形成する。</div>
+        
+
+        
+        <div class="score-reason">💡 親としての役割があるユーザーに対し、感情管理の基本は有用だが、プロファイルに直接の親育児記載がなく、ビジネス・自己最適化優先度は相対的に低い。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 2.0
+          </span>
+          <span class="source-tag">Art of Manliness</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.artofmanliness.com/culture/food-drink/best-hot-dog-brand/" target="_blank" rel="noopener noreferrer">
+            What’s the Best Hot Dog Brand?
+          </a>
+        </div>
+
+        
+        <div class="article-summary">アメリカ文化における「ホットドッグ」の歴史・役割・ブランド比較。夏の文化的アイコン。</div>
+        
+
+        
+        <div class="score-reason">💡 スタイル（British heritage classic）を重視し、食事も科学ベースで最適化するユーザーにとって、ホットドッグブランドの選択は直接的に無関係。関連性極めて低い。</div>
+        
+      </div>
+      
+    
+  </section>
+  
+  <section class="category">
+    <div class="category-header">
+      <span>💼 ビジネス・M&A</span>
+      <span class="category-count">3 件</span>
+    </div>
+
+    
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 7.0
+          </span>
+          <span class="source-tag">Nikkei Asia</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://asia.nikkei.com/business/technology/indian-it-firms-ramp-up-acquisitions-as-ai-reshapes-growth" target="_blank" rel="noopener noreferrer">
+            Indian IT firms ramp up acquisitions as AI reshapes growth
+          </a>
+        </div>
+
+        
+        <div class="article-summary">インドIT企業がAI時代の成長戦略として買収を加速、業界再編が進行中。AI導入と戦略的M&A の両立パターンは「カナエル」の事業拡大戦略やスタートアップ成長モデルの参考値として有用。</div>
+        
+
+        
+        <div class="score-reason">💡 AI×M&A×スケーリングの組み合わせがユーザーの現在の事業関心層と合致し、200億規模事業構想の参考事例として価値がある。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 4.5
+          </span>
+          <span class="source-tag">Nikkei Asia</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://asia.nikkei.com/economy/trade/indonesia-logs-first-trade-deficit-in-six-years-as-imports-soar" target="_blank" rel="noopener noreferrer">
+            Indonesia logs first trade deficit in six years as imports soar
+          </a>
+        </div>
+
+        
+        <div class="article-summary">インドネシアが6年ぶりに貿易赤字に転じ、輸入が急増している状況。新興市場経済の構造変化を示す指標として、M&A戦略や市場分析の参考値となる。</div>
+        
+
+        
+        <div class="score-reason">💡 国際経済動向として背景知識になるが、ユーザーの事業・投資判断に直結する具体的示唆に欠ける。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 3.0
+          </span>
+          <span class="source-tag">Nikkei Asia</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://asia.nikkei.com/business/travel-leisure/japan-raises-visa-fees-fivefold-to-tackle-overtourism2" target="_blank" rel="noopener noreferrer">
+            Japan raises visa fees fivefold to tackle overtourism
+          </a>
+        </div>
+
+        
+        <div class="article-summary">日本が観光オーバーツーリズム対策として査証料を5倍に引き上げ。バルセロナ在住のユーザーにとっても観光地マネジメント施策の事例参考になるが、事業への直接的影響は限定的。</div>
+        
+
+        
+        <div class="score-reason">💡 政策トレンドとして知識的価値はあるが、スタートアップ経営・M&A・自己最適化の優先課題から外れている。</div>
+        
+      </div>
+      
+    
+  </section>
+  
+  <section class="category">
+    <div class="category-header">
+      <span>🤖 AI・最新技術</span>
+      <span class="category-count">12 件</span>
+    </div>
+
+    
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.0
+          </span>
+          <span class="source-tag">Benedict Evans</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.ben-evans.com/benedictevans/2026/2/19/how-will-openai-compete-nkg2x" target="_blank" rel="noopener noreferrer">
+            How will OpenAI compete?
+          </a>
+        </div>
+
+        
+        <div class="article-summary">OpenAIは独自技術なく、ユーザー粘性・ネットワーク効果が限定的。既存大手は技術追いつき、未発明の新体験こそが価値源泉だが、OpenAI単独では創出できない課題を指摘。</div>
+        
+
+        
+        <div class="score-reason">💡 「カナエル」200億規模目指す際の根本的な競争戦略課題を明確化。大手プレイヤー対抗には「自社固有の新体験・差別化」が必須であり、戦略修正・パートナーシップの判断材料として極めて重要。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.5
+          </span>
+          <span class="source-tag">Benedict Evans</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.ben-evans.com/benedictevans/2026/5/24/ai-job-exposure" target="_blank" rel="noopener noreferrer">
+            Predicting AI job exposure
+          </a>
+        </div>
+
+        
+        <div class="article-summary">AIによる職業リスク分析は「不可能に近い」とBenedict Evans指摘。職業変化・周辺環境変化・業務の定量化が不確定だから。</div>
+        
+
+        
+        <div class="score-reason">💡 AI時代の事業戦略立案では「予測可能性の限界」を冷徹に認識することが重要。あなたの「流されない軸」と合致し、誇大な予測に左右されない思考を強化する。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.5
+          </span>
+          <span class="source-tag">Latent Space</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.latent.space/p/forward-deployed-engineers-aiewf" target="_blank" rel="noopener noreferrer">
+            Forward Deployed Engineers and the future of software engineering
+          </a>
+        </div>
+
+        
+        <div class="article-summary">Sierra's Natalie Meurer論述：プロダクトエンジニアとForward Deployed Engineer（FDE）の収束化。新しい人材・組織モデルの萌芽。</div>
+        
+
+        
+        <div class="score-reason">💡 「カナエル」チーム構成・人材採用戦略を再考する上で、エンジニアリング人材の役割定義の進化は極めて重要。起業家として組織設計の判断基準になる。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.0
+          </span>
+          <span class="source-tag">Benedict Evans</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.ben-evans.com/benedictevans/2025/11/23/ai-networks-and-mechanical-turks" target="_blank" rel="noopener noreferrer">
+            AI, networks and Mechanical Turks
+          </a>
+        </div>
+
+        
+        <div class="article-summary">LLMは検索・推薦システムの品質をどこまで向上させるか、莫大なユーザーベース なしでシステム構築は可能か、という根本的な問い。</div>
+        
+
+        
+        <div class="score-reason">💡 スケーラビリティ・ネットワーク効果なしの事業成立可能性を検討する際の理論的フレームワークとなり、「カナエル」の成長シナリオ構築に直結する。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 7.5
+          </span>
+          <span class="source-tag">OpenAI News</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://openai.com/index/how-chatgpt-adoption-has-expanded" target="_blank" rel="noopener noreferrer">
+            How ChatGPT adoption has expanded
+          </a>
+        </div>
+
+        
+        <div class="article-summary">ChatGPTの全世界的な利用拡大とユーザー行動の多様化を示唆。地域・言語別の成長トレンド情報。</div>
+        
+
+        
+        <div class="score-reason">💡 AI市場の拡大状況を把握でき「カナエル」の競争環境理解に役立つが、定量的な具体数値やビジネス戦略への直接的示唆が不足。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 7.5
+          </span>
+          <span class="source-tag">Latent Space</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.latent.space/p/aiewf-daily-dispatch-loops" target="_blank" rel="noopener noreferrer">
+            AIEWF Daily Dispatch: Loops, Software Factories & Forward Deployed Engineers
+          </a>
+        </div>
+
+        
+        <div class="article-summary">AI Engineer World's Fairで「ループ型エージェント」「ソフトウェアファクトリー」「Forward Deployed Engineer」が主要テーマ。オープンモデルも注目。</div>
+        
+
+        
+        <div class="score-reason">💡 AI開発の最先端トレンド（エージェント・自動化・人材モデル）を把握でき、「カナエル」開発・チーム構成の参考になるが、詳細な実装手法の情報は不足。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 7.0
+          </span>
+          <span class="source-tag">OpenAI News</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://openai.com/index/core-dump-epidemiology-data-infrastructure-bug" target="_blank" rel="noopener noreferrer">
+            Core dump epidemiology: fixing an 18-year-old bug
+          </a>
+        </div>
+
+        
+        <div class="article-summary">OpenAIエンジニアが大規模コアダンプ分析で18年続くバグを解決。ハードウェア障害と長期的なソフトウェアバグを特定。</div>
+        
+
+        
+        <div class="score-reason">💡 システム開発・保守の深い実例として参考になり、スケール時の隠れた問題発見プロセスは「カナエル」の品質管理に応用可能。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 6.5
+          </span>
+          <span class="source-tag">Hacker News</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.pcgamer.com/gaming-industry/open-source-game-engine-godot-will-no-longer-accept-ai-authored-code-contributions-we-cant-trust-heavy-users-of-ai-to-understand-their-code-enough-to-fix-it/" target="_blank" rel="noopener noreferrer">
+            Godot will no longer accept AI-authored code contributions
+          </a>
+        </div>
+
+        
+        <div class="article-summary">GodotエンジンがAI生成コード提出を禁止。理由は「AIヘビーユーザーが自分のコードを十分に理解し修正できない可能性がある」という品質・責任感への懸念。</div>
+        
+
+        
+        <div class="score-reason">💡 AIツール活用の現実的な限界と開発組織の判断基準として参考になるが、自社プロダクト開発への直接的インパクトは限定的。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 6.0
+          </span>
+          <span class="source-tag">Latent Space</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.latent.space/p/ainews-sonnet-5-today-and-fable-5" target="_blank" rel="noopener noreferrer">
+            [AINews] Sonnet 5 today, and Fable 5 tomorrow
+          </a>
+        </div>
+
+        
+        <div class="article-summary">新しいモデル（Sonnet 5、Fable 5）がリリース予定。「Everything is open again!」との表現でオープンモデルの重要性を強調。</div>
+        
+
+        
+        <div class="score-reason">💡 AI技術の進化速度を実感でき市場監視として有用だが、「Everything is open」の意味が簡潔すぎて戦略的インパクトの判断が難しい。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 4.5
+          </span>
+          <span class="source-tag">OpenAI News</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://openai.com/index/introducing-genebench-pro" target="_blank" rel="noopener noreferrer">
+            Introducing GeneBench-Pro
+          </a>
+        </div>
+
+        
+        <div class="article-summary">ゲノミクス・生物学領域でのAI性能を測定する新ベンチマーク「GeneBench-Pro」。複雑な実世界データセットを使用。</div>
+        
+
+        
+        <div class="score-reason">💡 AI能力評価の先端的な動向として知識的価値はあるが、夢管理アプリやビジネス戦略との直接的な関連性が薄い。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 4.0
+          </span>
+          <span class="source-tag">Hacker News</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.conception.bio/science-and-updates/the-first-early-human-eggs-from-stem-cells" target="_blank" rel="noopener noreferrer">
+            The first early human eggs from stem cells
+          </a>
+        </div>
+
+        
+        <div class="article-summary">幹細胞から初めて初期段階の人間の卵子を作製。バイオテクノロジーの重大なブレークスルー。</div>
+        
+
+        
+        <div class="score-reason">💡 長寿・健康最適化への長期的な関心はあるが、起業家としての短期的な事業インパクトや行動指針にはならない。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 3.0
+          </span>
+          <span class="source-tag">Hacker News</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://ayushtambde.com/blog/matrix-orthogonalization-improves-memory-in-recurrent-models/" target="_blank" rel="noopener noreferrer">
+            Matrix Orthogonalization Improves Memory in Recurrent Models
+          </a>
+        </div>
+
+        
+        <div class="article-summary">行列直交化がRNN系モデルのメモリ性能を改善する手法を提示。AI・機械学習の技術的な深掘り。</div>
+        
+
+        
+        <div class="score-reason">💡 専門的なML研究だがBubble/ノーコードアプリ開発との直接関連性が薄く、スタートアップ戦略への応用可能性が低い。</div>
+        
+      </div>
+      
+    
+  </section>
+  
+  <section class="category">
+    <div class="category-header">
+      <span>⚡ 生産性・自動化</span>
+      <span class="category-count">6 件</span>
+    </div>
+
+    
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 9.0
+          </span>
+          <span class="source-tag">Cal Newport</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://calnewport.com/ai-isnt-breaking-work-its-already-broken/" target="_blank" rel="noopener noreferrer">
+            AI Isn’t Breaking Work. It’s Already Broken.
+          </a>
+        </div>
+
+        
+        <div class="article-summary">Work AI Instituteの調査から、AIの責任にされている職場問題の多くは既存の組織構造・マネジメント不全が根本原因であることを指摘。</div>
+        
+
+        
+        <div class="score-reason">💡 AIツール導入の本当の課題（技術ではなく人・組織の問題）を直視するため、カナエル事業化やクライアント支援の根本的戦略に影響する重要な認識。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.5
+          </span>
+          <span class="source-tag">Hacker News (productivity)</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://i0exception.substack.com/p/doing-more-shipping-less" target="_blank" rel="noopener noreferrer">
+            The AI Productivity Trap
+          </a>
+        </div>
+
+        
+        <div class="article-summary">AIツール導入で作業量は増えても成果物の出荷が減る「生産性の逆説」を指摘。見かけの効率化に惑わされず、最終的なアウトプット（実際のシップ）にフォーカスすべき。</div>
+        
+
+        
+        <div class="score-reason">💡 カナエル開発中の実務経験と直結し、AIツール選定時の意思決定を左右する本質的な問題提起だから。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-high">
+            ★ 8.0
+          </span>
+          <span class="source-tag">Cal Newport</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://calnewport.com/beware-of-productivity-paradoxes/" target="_blank" rel="noopener noreferrer">
+            Beware of Productivity Paradoxes
+          </a>
+        </div>
+
+        
+        <div class="article-summary">PCやスプレッドシートなど革新的技術が必ずしも期待通りの生産性向上をもたらさない歴史的パターンを解説。AIブームの過剰な期待値調整の重要性を示唆。</div>
+        
+
+        
+        <div class="score-reason">💡 AIツール導入の陥穽を歴史的文脈で示すため、カナエル開発やAI活用の意思決定時に重要な視点をもたらす。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 6.5
+          </span>
+          <span class="source-tag">Cal Newport</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://calnewport.com/dear-ai-companies-stop-the-doom-trolling/" target="_blank" rel="noopener noreferrer">
+            Dear AI Companies: Stop the “Doom Trolling”
+          </a>
+        </div>
+
+        
+        <div class="article-summary">AI企業の過剰な「危機煽り」マーケティングを批判。不安を商材化する手法への警笛を鳴らす。</div>
+        
+
+        
+        <div class="score-reason">💡 流されない思考、メディア・企業の論理的矛盾を見抜く力を磨く上で有用だが、直接的な実務インパクトは中程度。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 4.0
+          </span>
+          <span class="source-tag">Hacker News (productivity)</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://techcrunch.com/2026/06/29/flipper-devices-new-busy-bar-is-a-customizable-display-for-productivity/" target="_blank" rel="noopener noreferrer">
+            Flipper Device's new Busy Bar is a customizable display for productivity
+          </a>
+        </div>
+
+        
+        <div class="article-summary">Flipper Devicesがカスタマイズ可能なBusy Barディスプレイをリリース。視覚的な生産性メトリクス表示でフォーカス管理をサポート。</div>
+        
+
+        
+        <div class="score-reason">💡 ガジェット的な生産性ツール紹介で、根本的なアプローチ改善より表層的な対症療法に見えるため優先度は低い。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 3.0
+          </span>
+          <span class="source-tag">Hacker News (productivity)</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.bls.gov/opub/ted/2026/productivity-up-0-3-percent-in-first-quarter-2026.htm" target="_blank" rel="noopener noreferrer">
+            Productivity up 0.3 percent in first quarter 2026
+          </a>
+        </div>
+
+        
+        <div class="article-summary">2026年Q1の米国生産性は前期比0.3%上昇。マクロデータとしては参考になるが個別事業への直接的な示唆は限定的。</div>
+        
+
+        
+        <div class="score-reason">💡 統計データは一般的参考値に留まり、個人の生産性最適化やスタートアップ戦略に直接活用しにくい。</div>
+        
+      </div>
+      
+    
+  </section>
+  
+  <section class="category">
+    <div class="category-header">
+      <span>📚 本・ベストセラー</span>
+      <span class="category-count">9 件</span>
+    </div>
+
+    
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 7.0
+          </span>
+          <span class="source-tag">Marginal Revolution</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://marginalrevolution.com/marginalrevolution/2026/06/differentiation-drives-the-erosion-of-positivity-on-social-media.html?utm_source=rss&utm_medium=rss&utm_campaign=differentiation-drives-the-erosion-of-positivity-on-social-media" target="_blank" rel="noopener noreferrer">
+            Differentiation drives the erosion of positivity on social media
+          </a>
+        </div>
+
+        
+        <div class="article-summary">Reddit 20億コメント分析と実験から、SNS上の対話は時系列で負性が増加する傾向を発見。ユーザーが注目を集めるため異論・反発性の高いコンテンツを好む心理メカニズムが原因。</div>
+        
+
+        
+        <div class="score-reason">💡 カナエルのようなコミュニティプロダクト運営時、ユーザー心理・コンテンツ設計の知見として活用できるが、即行動性は中程度。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 6.0
+          </span>
+          <span class="source-tag">NYT Books</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.nytimes.com/2023/05/22/books/fires-in-the-dark-kay-redfield-jamison.html" target="_blank" rel="noopener noreferrer">
+            In ‘Fires in the Dark,’ Kay Redfield Jamison Turns to Healers
+          </a>
+        </div>
+
+        
+        <div class="article-summary">躁うつ病専門家ケイ・レッドフィールド・ジェイミソン著『Fires in the Dark』は心理療法へのラブレター的著作。精神医学と癒しの追求。</div>
+        
+
+        
+        <div class="score-reason">💡 健康最適化・自己認識向上への関心に関連するが、具体的な実装方法や最新知見に欠ける。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-mid">
+            ★ 5.5
+          </span>
+          <span class="source-tag">Marginal Revolution</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://marginalrevolution.com/marginalrevolution/2026/07/what-ive-been-reading-291.html?utm_source=rss&utm_medium=rss&utm_campaign=what-ive-been-reading-291" target="_blank" rel="noopener noreferrer">
+            What I’ve been reading
+          </a>
+        </div>
+
+        
+        <div class="article-summary">エリザベス・ブキャナンの『So You Want to Own Greenland?』を含む読書記録。グリーンランドの歴史的主権争い（1930年代ノルウェーの領有権主張とハーグ仲裁）など地政学的視点が学べる。</div>
+        
+
+        
+        <div class="score-reason">💡 地政学や歴史への一般的な教養は有用だが、起業・M&A・生産性など直接的な事業目標との関連性は低い。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 4.0
+          </span>
+          <span class="source-tag">NYT Books</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.nytimes.com/2023/05/22/books/review/martin-amis.html" target="_blank" rel="noopener noreferrer">
+            Martin Amis: An Appreciation
+          </a>
+        </div>
+
+        
+        <div class="article-summary">英国の著名作家マーティン・エイミスの文学的成就を批評家が評価。洗練された思想と表現力の鑑賞。</div>
+        
+
+        
+        <div class="score-reason">💡 教養・文化的視座は品格磨きに関連するが、ビジネス・自己最適化・健康とは直接関連なし。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 3.5
+          </span>
+          <span class="source-tag">NYT Books</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://www.nytimes.com/2023/05/22/books/james-campbell-nb-by-jc.html" target="_blank" rel="noopener noreferrer">
+            Book Review: ‘NB by J.C.,’ by James Campbell
+          </a>
+        </div>
+
+        
+        <div class="article-summary">ジェームス・キャンベルの『NB by J.C.』は『Times Literary Supplement』掲載の思索集。様々な知的関心の記録。</div>
+        
+
+        
+        <div class="score-reason">💡 教養的価値はあるが、具体的な内容不明で、実務的な示唆に乏しい。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 3.0
+          </span>
+          <span class="source-tag">Book Riot</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://bookriot.com/publishers-weekly-most-anticipated-books-of-fall-2026/" target="_blank" rel="noopener noreferrer">
+            Publishers Weekly’s Most Anticipated Books of Fall
+          </a>
+        </div>
+
+        
+        <div class="article-summary">秋の新刊予告とアーシュラ・K・ル=グウィン賞短編リスト、『The Love Hypothesis』予告編など。出版業界の季節トレンド情報。</div>
+        
+
+        
+        <div class="score-reason">💡 出版トレンド情報は参考になるが、起業家の優先度としては低く、具体的な実装知見に乏しい。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 2.0
+          </span>
+          <span class="source-tag">Book Riot</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://bookriot.com/book-riots-deals-of-the-day-for-june-30-2026/" target="_blank" rel="noopener noreferrer">
+            Book Riot’s Deals of the Day for June 30, 2026
+          </a>
+        </div>
+
+        
+        <div class="article-summary">トレバー・ノア回顧録、オクタヴィア・バトラー SF古典、WWII期パリの米国ジャーナリスト関連など日替わり書籍セール情報。</div>
+        
+
+        
+        <div class="score-reason">💡 単なる日刊書籍セール情報で、戦略的学習や事業判断への示唆が不足。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 1.5
+          </span>
+          <span class="source-tag">Book Riot</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://bookriot.com/most-popular-queer-romance-audiobooks-on-libby/" target="_blank" rel="noopener noreferrer">
+            The Most Popular Queer Romance Audiobooks on Libby
+          </a>
+        </div>
+
+        
+        <div class="article-summary">Libbyプラットフォームで人気のクィア・ロマンス・オーディオブック特集。スポーツがテーマの作品が上位。</div>
+        
+
+        
+        <div class="score-reason">💡 エンタメ情報であり、事業・自己最適化・ビジネス目標との関連性がない。</div>
+        
+      </div>
+      
+      <div class="article">
+        <div class="article-meta"><span class="score-badge score-low">
+            ★ 0.5
+          </span>
+          <span class="source-tag">Marginal Revolution</span>
+        </div>
+
+        <div class="article-title">
+          <a href="https://marginalrevolution.com/marginalrevolution/2026/07/reconstruction-of-the-fables.html?utm_source=rss&utm_medium=rss&utm_campaign=reconstruction-of-the-fables" target="_blank" rel="noopener noreferrer">
+            Fables of the Reconstruction/Reconstruction of the Fables
+          </a>
+        </div>
+
+        
+        <div class="article-summary">記事内容が不十分で詳細評価不可。タイトルのみでは寓話と再構築のテーマが不明確。</div>
+        
+
+        
+        <div class="score-reason">💡 本文コンテンツがなく、スコア判定に必要な情報が欠落しているため。</div>
+        
+      </div>
+      
+    
+  </section>
+  
+
+  <footer>
+    Generated by Daily Briefing System &times; Claude Haiku<br>
+    <a href="../index.html">← アーカイブ一覧に戻る</a>
+  </footer>
+
+</div>
+</body>
+</html>
